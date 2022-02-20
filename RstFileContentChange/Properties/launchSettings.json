@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RstFileContentChange": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\桌面\\新建文件夹 (2)\\godot-docs-master\""
+    }
+  }
+}
