@@ -38,11 +38,6 @@ namespace PoFileParser
             foreach (var pair in translatePairs)
             {
                 keyValuePairs.Add(pair.Msgid, pair.Msgstr);
-                if (pair.Msgid.Contains("Permission is hereby granted, free of charge, to any person obtaining a copy "))
-                {
-                    Console.WriteLine(pair.Msgid);
-                    Console.ReadKey();
-                }
             }
             return keyValuePairs;
         }

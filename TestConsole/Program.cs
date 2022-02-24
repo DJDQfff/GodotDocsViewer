@@ -18,7 +18,7 @@ namespace ConsoleApp1
             var lines = File.ReadAllLines(str);
             var paragraph = lines.SplitParagraphByEmptyLines(false);
 
-            var a = paragraph[0].Content.RstFileSpecialConnectString();
+            var a = paragraph[0].Lines.RstFileSpecialConnectString();
             a.Show();
             Console.ReadKey();
         }
@@ -38,7 +38,7 @@ namespace ConsoleApp1
             string rstFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\getting_started\step_by_step\instancing.rst";
             Stream stream = new FileStream(rstFilePath, FileMode.Open);
 
-            Class1.Main(stream);
+            Core.Main(stream);
         }
 
         #endregion 方法

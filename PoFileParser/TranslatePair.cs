@@ -30,9 +30,9 @@ namespace PoFileParser
         /// </summary>
         public string Msgstr { set; get; }
 
-        public TranslatePair (Paragraph paragraph) : base(paragraph.Content)
+        public TranslatePair (Paragraph paragraph) : base(paragraph.Lines)
         {
-            MemberParser(this.Content);
+            MemberParser(this.Lines);
         }
 
         private void MemberParser (IList<string> lines)

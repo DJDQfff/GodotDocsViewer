@@ -8,18 +8,24 @@ using MyStandard20Library;
 
 namespace RstFileParser
 {
-    public static class Factory_RstParagraph
+    /// <summary>
+    /// 表格
+    /// </summary>
+    public class RstTable : Paragraph
     {
-        public void
-    }
+        /// <summary>
+        /// 缩进 空格
+        /// </summary>
+        public int Retract { set; get; }
 
-    public class RstParagraph : Paragraph
-    {
-        public RstParagraph Paarent { set; get; }
-        public RstParagraph Child { set; get; }
+        /// <summary>
+        /// 要翻译的有效内容
+        /// </summary>
+        public string Content { set; get; }
 
-        public RstParagraph (Paragraph paragraph) : base(paragraph.Content)
+        public RstTable (IList<string> lines) : base(lines)
         {
         }
     }
+
 }
