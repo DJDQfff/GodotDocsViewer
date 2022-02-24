@@ -25,10 +25,7 @@ namespace RstFileContentChange
             foreach (var s in vs)
             {
                 string ns = s;
-                if (s.Contains('\\'))
-                {
-                    ns = s.Replace("\\\"", "\"");
-                }
+                ns = s.Replace("\"", "\\\"");
                 vs1.Add(ns.Trim());
             }
             if (vs.Count() > 1)
