@@ -4,28 +4,51 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+
+using MyStandard20Library;
 
 namespace RstFileParser
 {
     public static class Helper
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="vs"></param>
-        /// <returns></returns>
-        public static string PickActualContent (this IList<string> vs)
+        public static List<Paragraph> SplitOrderListLine (this Paragraph parent, params int[] ints)
         {
+            List<int> Indexes = new List<int>(ints);
+            Indexes.Add(parent.Lines.Count);
 
+            List<Paragraph> paragraphs = new List<Paragraph>();
+
+            for (int index = 0; index < Indexes.Count - 1; index++)
+            {
+                var vs = parent.Lines.SubList(Indexes[index], Indexes[index + 1] - 1);
+
+                vs.RemoveEmptyLine();
+
+                Paragraph paragraph = new Paragraph(vs);
+
+                paragraphs.Add(paragraph);
+            }
+
+            return paragraphs;
         }
+
+        public static bool IsRstFile (this string path)
+        {
+            var extension = Path.GetExtension(path);
+            if ((extension is ".rst") || (extension is ".RST"))
+                return true;
+            else
+                return false;
+        }
+
         /// <summary>
         /// 拼接字符串，返回一个新字符串
         /// 这是对rst文件特别改的。
         /// 1.多行之间用一个空格拼接
         /// 2.单行则不用后面补空格
         /// 3.最后一行不用补空格
-        /// 4.Sphinx有rst文件导出po文件时，会对"号进行转义
+        /// 4.Sphinx从rst文件导出po文件时，会对"号进行转义
         /// </summary>
         /// <param name="vs"></param>
         /// <returns></returns>
@@ -47,15 +70,6 @@ namespace RstFileParser
             {
                 return vs1[0];
             }
-        }
-
-        public static bool IsRstFile (this string path)
-        {
-            var extension = Path.GetExtension(path);
-            if ((extension is ".rst") || (extension is ".RST"))
-                return true;
-            else
-                return false;
         }
     }
 }

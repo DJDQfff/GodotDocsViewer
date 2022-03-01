@@ -12,7 +12,9 @@ namespace PoFileParser
     {
         public static List<TranslatePair> Parse (IList<string> lines)
         {
-            List<Paragraph> paragraphs = lines.SplitParagraphByEmptyLines(true);
+            List<string> newlist = new List<string>(lines);
+            newlist.RemoveItemMatchRegex(@"^#");
+            List<Paragraph> paragraphs = lines.SplitParagraphByEmptyLines();
             List<TranslatePair> pairs = new List<TranslatePair>();
 
             foreach (var pa in paragraphs)

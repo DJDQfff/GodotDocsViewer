@@ -12,54 +12,34 @@ namespace RstFileContentChange
 {
     internal class Program
     {
-        private const string Target_PoPath = @"D:\桌面\新建文件夹 (2)\locale\zh_CN\LC_MESSAGES\zh_CN.po";
-        private const string Target_FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
+        private const string PoFilePath = @"D:\桌面\新建文件夹 (2)\locale\zh_CN\LC_MESSAGES\zh_CN.po";
+        private const string FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
 
         private static Dictionary<string, string> PoPairs;
         private static List<string> NotInclude = new List<string>();
         private const string Regex1 = @"\.\..+\:";
 
-        private static async Task ParagraphOperation (string path)
+        private static void Main (params string[] args)
         {
-            var lines = File.ReadAllLines(path);
-            var pragraphes = lines.SplitParagraphByEmptyLines(true);
+            PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
 
-            List<List<string>> content = new List<List<string>>();
-            List<Task> tasks = new List<Task>();
-            foreach (var rstpragraph in pragraphes)
-            {
-                Task task = Task.Run(() =>
-                {
-                    List<string> vs = new List<string>();
-                    string check = rstpragraph.Lines.RstFileSpecialConnectString();
-                    if (PoPairs.ContainsKey(check))
-                    {
-#if DEBUG
-                        //Console.WriteLine($"存在:{check}");
-                        //Console.ReadKey();
-#endif
-                        vs.AddRange(rstpragraph.Lines);
-                    }
-                    else
-                    {
-                        NotInclude.Add(check);
-                        //Console.WriteLine($"不存在:{check}");
-                    }
-                });
-                tasks.Add(task);
-            }
-            await Task.WhenAll(tasks);
-            Console.WriteLine($"{path}已遍历完");
-            Console.ReadKey();
-            NotInclude.ShowList();
+            Console.WriteLine("转换程序开始执行,输入任意键以继续：... ...");
+
+            Console.ReadLine();
+
+            MainLoop(FolderPath);
         }
 
-        internal static async Task Loop (string currentfolder)
+        /// <summary>
+        /// 递归对每个文件进行操作
+        /// </summary>
+        /// <param name="currentfolder"></param>
+        internal static void MainLoop (string currentfolder)
         {
             string[] subfolders = Directory.GetDirectories(currentfolder);
             foreach (string folderpath in subfolders)
             {
-                await Loop(folderpath);
+                MainLoop(folderpath);
             }
 
             string[] filepath = Directory.GetFiles(currentfolder);
@@ -67,29 +47,34 @@ namespace RstFileContentChange
             {
                 if (path.IsRstFile())
                 {
-                    await ParagraphOperation(path);
-#if DEBUG
                     Console.WriteLine($"\t当前文件：{path}\r");
+                    var rstlist = RstFileOperation(path);
+                    var list = rstlist.ConvertToAllLines();
+                    //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine();
                     Console.ReadKey();
-#endif
                 }
             }
-#if DEBUG
             Console.WriteLine($"文件夹{currentfolder}已遍历完毕");
             Console.ReadKey();
-#endif
         }
 
-        private static async Task Main (params string[] args)
+        private static List<RstLine> RstFileOperation (string path)
         {
-            PoPairs = PoFileParser.Core.GetDictionary(Target_PoPath);
+            List<RstLine> rstLines = new List<RstLine>();
+            var lines = File.ReadAllLines(path);
+            var pragraphes = lines.SplitParagraphByEmptyLines();
 
-            Console.WriteLine("\r转换程序开始执行,输入任意键以继续");
-
+            foreach (var rstpragraph in pragraphes)
+            {
+                rstLines.AddRange(ParagraphParser.ParseParagraph(rstpragraph));
+                rstLines.Add(RstLineFactory.CreatNewLine());
+            }
+            Console.WriteLine($"{path}已遍历完");
             Console.ReadKey();
+            NotInclude.ShowList();
 
-            await Loop(Target_FolderPath);
+            return rstLines;
         }
     }
 }
