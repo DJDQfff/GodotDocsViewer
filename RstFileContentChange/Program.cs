@@ -84,7 +84,7 @@ namespace RstFileContentChange
 
                 rstLines.Add(RstLineFactory.CreatNewLine());
 
-                if (rstpragraph.Lines[0].Contains("toctree"))
+                if (rstpragraph.IsCommand())  // TODO 这个判断方法存在隐患
                 {
                     flag = false;    // tortree为一个命令，他下面的一段都是给Sphinx用的，不需要翻译，跳过
                 }

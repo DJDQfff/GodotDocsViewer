@@ -8,6 +8,7 @@ namespace RstFileParser
 {
     public class RstRegex
     {
+        public const string CommandToctree = @"^\.{2}\s+toctree:";
         /// <summary>
         /// 以.. :开头，不管，后面还有没有东西，用于笼统判断
         /// </summary>

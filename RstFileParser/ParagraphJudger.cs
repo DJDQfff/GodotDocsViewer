@@ -52,9 +52,15 @@ namespace RstFileParser
                 return false;
         }
 
+        /// <summary>
+        /// 是否是指令段落
+        /// </summary>
+        /// <param name="paragraph"></param>
+        /// <returns></returns>
         public static bool IsCommand (this Paragraph paragraph)
         {
-            return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandStart) != -1;
+            return paragraph.AnyLineMatchRegex(RstRegex.CommandStart);
+            ////return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandStart) != -1;
         }
 
         /// <summary>
