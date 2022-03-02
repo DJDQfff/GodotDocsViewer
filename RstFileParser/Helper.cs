@@ -59,7 +59,8 @@ namespace RstFileParser
             {
                 string ns = s;
                 ns = s.Replace("\"", "\\\"");
-                vs1.Add(ns.Trim());
+                //ns = s.Replace("\\\\", "\\");
+                vs1.Add(ns.Trim());// 对部分行前面有缩进的移除，只保留纯文本
             }
             if (vs.Count() > 1)
             {

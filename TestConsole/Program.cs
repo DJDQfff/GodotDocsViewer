@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using MyStandard20Library;
 
 using PoFileParser;
-
+using static RstFileContentChange.Program;
 using RstFileParser;
 
 namespace ConsoleApp1
@@ -14,19 +14,33 @@ namespace ConsoleApp1
     {
         private static void Main (string[] args)
         {
-            string Target_PoPath = @"D:\桌面\新建文件夹 (2)\locale\zh_CN\LC_MESSAGES\zh_CN.po";
+            Dictionary<string, string> PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
 
-            Dictionary<string, string> PoPairs = PoFileParser.Core.GetDictionary(Target_PoPath);
+            List<RstLine> rstLines = new List<RstLine>();
+
+            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
+            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
+            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
+
+            var list = rstLines.ConvertToTranslatedAllLines(PoPairs);
+            Console.ReadLine();
+        }
+
+        private static void TestCOre ()
+        {
+            Dictionary<string, string> PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
 
             string Path = @"D:\桌面\新建文本文档.txt";
-            var lines = File.ReadAllLines(Path);
+            string test = @"D:\桌面\2.txt";
+
+            var lines = File.ReadAllLines(test);
             List<string> vs = new List<string>(lines);
             var paragraph = vs.SplitParagraphByEmptyLines();
 
             foreach (var para in paragraph)
             {
                 //para.Lines.ShowList();
-                var rstLines = para.ParseOrderList();
+                var rstLines = ParagraphParser.Core(para);
                 foreach (var r in rstLines)
                 {
                     Console.WriteLine(r.Content);
@@ -41,7 +55,6 @@ namespace ConsoleApp1
 
                 //Console.ReadLine();
             }
-            Console.ReadLine();
         }
 
         #region 方法

@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+*.pdf
+*.html
+/国际化 — Sphinx 2.2.0 文档_files
+*.txt
+*.md

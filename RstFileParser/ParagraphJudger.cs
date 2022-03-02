@@ -26,16 +26,6 @@ namespace RstFileParser
         }
 
         /// <summary>
-        /// 判断段落是否是单行指令
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static bool IsCommandSingleLine (this Paragraph paragraph)
-        {
-            return paragraph.LastLineRegexMatchIndex(RstRegex.CommandOnly) != -1;
-        }
-
-        /// <summary>
         /// 判断一个段落是不是标题段落
         /// </summary>
         /// <param name="paragraph"></param>
@@ -62,14 +52,9 @@ namespace RstFileParser
                 return false;
         }
 
-        /// <summary>
-        /// 判断段落是否是一个指令后跟着内容（要翻译）
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static bool IsCommandLineWithContent (this Paragraph paragraph)
+        public static bool IsCommand (this Paragraph paragraph)
         {
-            return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandWithContent) != -1;
+            return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandStart) != -1;
         }
 
         /// <summary>
@@ -84,6 +69,30 @@ namespace RstFileParser
         {
             return paragraph.IsAllLinesMatchRegex(RstRegex.Ref);
         }
+
+        #region 对.. :格式还可以更详细，但目前还不懂相关语法，暂时不弄
+
+        /// <summary>
+        /// 判断段落是否是一个指令后跟着内容（要翻译）
+        /// </summary>
+        /// <param name="paragraph"></param>
+        /// <returns></returns>
+        public static bool IsCommandLineWithContent (this Paragraph paragraph)
+        {
+            return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandWithContent) != -1;
+        }
+
+        /// <summary>
+        /// 判断段落是否是单行指令
+        /// </summary>
+        /// <param name="paragraph"></param>
+        /// <returns></returns>
+        public static bool IsCommandSingleLine (this Paragraph paragraph)
+        {
+            return paragraph.LastLineRegexMatchIndex(RstRegex.CommandOnly) != -1;
+        }
+
+        #endregion 对.. :格式还可以更详细，但目前还不懂相关语法，暂时不弄
 
         #region 废弃的方法
 

@@ -10,14 +10,13 @@ using RstFileParser;
 
 namespace RstFileContentChange
 {
-    internal class Program
+    public class Program
     {
-        private const string PoFilePath = @"D:\桌面\新建文件夹 (2)\locale\zh_CN\LC_MESSAGES\zh_CN.po";
-        private const string FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
+        public const string PoFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\zh_CN.po";
+        public const string FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
+        public const string FilterFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master\classes";
 
         private static Dictionary<string, string> PoPairs;
-        private static List<string> NotInclude = new List<string>();
-        private const string Regex1 = @"\.\..+\:";
 
         private static void Main (params string[] args)
         {
@@ -39,6 +38,9 @@ namespace RstFileContentChange
             string[] subfolders = Directory.GetDirectories(currentfolder);
             foreach (string folderpath in subfolders)
             {
+                if (folderpath is FilterFolder)
+                    continue;
+
                 MainLoop(folderpath);
             }
 
@@ -47,16 +49,18 @@ namespace RstFileContentChange
             {
                 if (path.IsRstFile())
                 {
-                    Console.WriteLine($"\t当前文件：{path}\r");
+                    Console.WriteLine($"当前文件：{path}");
                     var rstlist = RstFileOperation(path);
-                    var list = rstlist.ConvertToAllLines();
-                    //File.WriteAllLines(path, list);             // 覆盖文件操作
+                    var list = rstlist.ConvertToTranslatedAllLines(PoPairs);
+                    //list.ShowList();
+                    File.WriteAllLines(path, list);             // 覆盖文件操作
+                    Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
-                    Console.ReadKey();
+                    //Console.ReadLine();
                 }
             }
             Console.WriteLine($"文件夹{currentfolder}已遍历完毕");
-            Console.ReadKey();
+            //Console.ReadLine();
         }
 
         private static List<RstLine> RstFileOperation (string path)
@@ -65,14 +69,30 @@ namespace RstFileContentChange
             var lines = File.ReadAllLines(path);
             var pragraphes = lines.SplitParagraphByEmptyLines();
 
-            foreach (var rstpragraph in pragraphes)
+            bool flag = true;
+            for (int index = 0; index < pragraphes.Count; index++)
             {
-                rstLines.AddRange(ParagraphParser.ParseParagraph(rstpragraph));
+                var rstpragraph = pragraphes[index];
+                if (flag)
+                {
+                    rstLines.AddRange(ParagraphParser.Core(rstpragraph));
+                }
+                else
+                {
+                    rstLines.AddRange(RstLineFactory.Origin(rstpragraph));
+                }
+
                 rstLines.Add(RstLineFactory.CreatNewLine());
+
+                if (rstpragraph.Lines[0].Contains("toctree"))
+                {
+                    flag = false;    // tortree为一个命令，他下面的一段都是给Sphinx用的，不需要翻译，跳过
+                }
+                else
+                    flag = true;
             }
             Console.WriteLine($"{path}已遍历完");
-            Console.ReadKey();
-            NotInclude.ShowList();
+            //Console.ReadLine();
 
             return rstLines;
         }

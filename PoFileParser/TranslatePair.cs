@@ -15,6 +15,7 @@ namespace PoFileParser
     public class TranslatePair : Paragraph
     {
         private IList<string> content;
+
         /// <summary>
         /// 引用路径
         /// </summary>
@@ -79,7 +80,10 @@ namespace PoFileParser
                 {
                     temp = temp.Remove(0, 5);
                 }
-                Msgid += temp.Trim().Trim('\"');
+                string temp2 = temp.Trim();
+                int length = temp2.Length;
+                string temp3 = temp2.Substring(1, length - 2);
+                Msgid += temp3;
             }
 
             foreach (var line in msgstrlist)
@@ -90,7 +94,10 @@ namespace PoFileParser
                 {
                     temp = temp.Remove(0, 6);
                 }
-                Msgstr += temp.Trim().Trim('\"');
+                string temp2 = temp.Trim();
+                int length = temp2.Length;
+                string temp3 = temp2.Substring(1, length - 2);
+                Msgstr += temp3;
             }
         }
     }

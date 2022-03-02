@@ -3,24 +3,55 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
+using System.Linq;
 using MyStandard20Library;
 
 namespace RstFileParser
 {
     public static class RstLineHelper
     {
-        public static List<string> ConvertToAllLines (this List<RstLine> rstLines)
+        public static List<string> ConvertToTranslatedAllLines (this List<RstLine> rstLines, Dictionary<string, string> dic)
         {
             List<string> list = new List<string>();
             foreach (var rst in rstLines)
             {
-                list.Add(rst.ConvertToString());
+                string translated;
+                if (dic.TryGetValue(rst.Content, out translated))
+                {
+                    Console.WriteLine("成功一个");
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(rst.Content))
+                    {
+                        Console.WriteLine("失败一个");
+                        Console.WriteLine(rst.Content);
+                        Console.WriteLine("正在查找模糊项");
+                        var value = dic.Keys.Where(n => n.Contains(rst.Content.Take(10).ToString())).FirstOrDefault();
+                        if (value != null)
+                        {
+                            Console.WriteLine(value);
+                            int diff = rst.Content.CompareTo(value);
+                            Console.WriteLine($"第{diff}个出现不同");
+                        }
+                        //Console.ReadLine();
+                    }
+                    else
+                        Console.WriteLine("失败一个，内容为空");
+                }
+
+                list.Add(rst.ConvertToString(translated));
             }
             return list;
         }
 
-        public static string ConvertToString (this RstLine rstLine)
+        /// <summary>
+        /// 传入要翻译的文本，如果为空则用原句
+        /// </summary>
+        /// <param name="rstLine"></param>
+        /// <param name="translatedcontent"></param>
+        /// <returns></returns>
+        public static string ConvertToString (this RstLine rstLine, string translatedcontent)
         {
             int count = rstLine.Index;
             StringBuilder stringBuilder = new StringBuilder();
@@ -28,8 +59,10 @@ namespace RstFileParser
             {
                 stringBuilder.Append(' ');
             }
+
             stringBuilder.Append(rstLine.Char);
-            stringBuilder.Append(rstLine.Content);
+
+            stringBuilder.Append(string.IsNullOrWhiteSpace(translatedcontent) ? rstLine.Content : translatedcontent);
 
             return stringBuilder.ToString();
         }

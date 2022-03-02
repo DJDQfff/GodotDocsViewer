@@ -9,7 +9,12 @@ namespace RstFileParser
     public class RstRegex
     {
         /// <summary>
-        /// 匹配单行的 .. _doc_complying_with_licenses:
+        /// 以.. :开头，不管，后面还有没有东西，用于笼统判断
+        /// </summary>
+        public const string CommandStart = @"^\.{2}\s.+\:";
+
+        /// <summary>
+        /// 只有一行 ..  : 格式
         /// </summary>
         public const string CommandOnly = @"^\.{2}\s.+\:{1,2}$";
 
