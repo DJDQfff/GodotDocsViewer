@@ -12,15 +12,8 @@ namespace PoFileParser
     /// <summary>
     /// 翻译语句对
     /// </summary>
-    public class TranslatePair : Paragraph
+    internal class TranslatePair : Paragraph
     {
-        private IList<string> content;
-
-        /// <summary>
-        /// 引用路径
-        /// </summary>
-        public string[] UsedPosition { set; get; }
-
         /// <summary>
         /// 目标文本
         /// </summary>

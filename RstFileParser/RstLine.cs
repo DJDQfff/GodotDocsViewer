@@ -5,39 +5,32 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using MyStandard20Library;
+using PoFileParser;
+using static System.Console;
+using static MyStandard20Library.ConsoleShow;
 
 namespace RstFileParser
 {
     public static class RstLineHelper
     {
-        public static List<string> ConvertToTranslatedAllLines (this List<RstLine> rstLines, Dictionary<string, string> dic)
+        public static List<string> ConvertToTranslatedAllLines (this List<RstLine> rstLines, PoDictionary dic)
         {
             List<string> list = new List<string>();
             foreach (var rst in rstLines)
             {
-                string translated;
-                if (dic.TryGetValue(rst.Content, out translated))
+                string key = rst.Content;
+
+                string translated = key;
+
+                if (!string.IsNullOrWhiteSpace(key))             // 跳过无效key
                 {
-                    Console.WriteLine("成功一个");
-                }
-                else
-                {
-                    if (!string.IsNullOrWhiteSpace(rst.Content))
+                    translated = dic[key];
+
+                    if (translated is null)
                     {
-                        Console.WriteLine("失败一个");
-                        Console.WriteLine(rst.Content);
-                        Console.WriteLine("正在查找模糊项");
-                        var value = dic.Keys.Where(n => n.Contains(rst.Content.Take(10).ToString())).FirstOrDefault();
-                        if (value != null)
-                        {
-                            Console.WriteLine(value);
-                            int diff = rst.Content.CompareTo(value);
-                            Console.WriteLine($"第{diff}个出现不同");
-                        }
-                        //Console.ReadLine();
+                        translated = rst.Content;                // 如果为null，则不翻译
+                        WriteLine($"失败：\n{key}\n");
                     }
-                    else
-                        Console.WriteLine("失败一个，内容为空");
                 }
 
                 list.Add(rst.ConvertToString(translated));

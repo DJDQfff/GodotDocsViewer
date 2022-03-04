@@ -15,18 +15,16 @@ namespace RstFileContentChange
         public const string PoFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\zh_CN.po";
         public const string FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
         public const string FilterFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master\classes";
-
-        private static Dictionary<string, string> PoPairs;
+        public const string TestFolder = @"D:\桌面\测试";
+        public static PoFileParser.PoDictionary PoDictionary = PoFileParser.Factory.Creat(PoFilePath);
 
         private static void Main (params string[] args)
         {
-            PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
-
             Console.WriteLine("转换程序开始执行,输入任意键以继续：... ...");
 
             Console.ReadLine();
 
-            MainLoop(FolderPath);
+            MainLoop(TestFolder);
         }
 
         /// <summary>
@@ -36,6 +34,7 @@ namespace RstFileContentChange
         internal static void MainLoop (string currentfolder)
         {
             string[] subfolders = Directory.GetDirectories(currentfolder);
+
             foreach (string folderpath in subfolders)
             {
                 if (folderpath is FilterFolder)
@@ -51,9 +50,9 @@ namespace RstFileContentChange
                 {
                     Console.WriteLine($"当前文件：{path}");
                     var rstlist = RstFileOperation(path);
-                    var list = rstlist.ConvertToTranslatedAllLines(PoPairs);
+                    var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
                     //list.ShowList();
-                    File.WriteAllLines(path, list);             // 覆盖文件操作
+                    //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
                     //Console.ReadLine();
@@ -84,12 +83,14 @@ namespace RstFileContentChange
 
                 rstLines.Add(RstLineFactory.CreatNewLine());
 
-                if (rstpragraph.IsCommand())  // TODO 这个判断方法存在隐患
+                if (rstpragraph.Lines.AnyLineContains("toctree"))  // TODO 这个判断方法存在隐患
                 {
                     flag = false;    // tortree为一个命令，他下面的一段都是给Sphinx用的，不需要翻译，跳过
                 }
                 else
+                {
                     flag = true;
+                }
             }
             Console.WriteLine($"{path}已遍历完");
             //Console.ReadLine();

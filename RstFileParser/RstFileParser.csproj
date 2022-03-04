@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\我的API库\MyStandard20Library\MyStandard20Library.csproj" />
+    <ProjectReference Include="..\PoFileParser\PoFileParser.csproj" />
   </ItemGroup>
 
 </Project>

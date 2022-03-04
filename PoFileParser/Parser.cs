@@ -8,9 +8,9 @@ using MyStandard20Library;
 
 namespace PoFileParser
 {
-    public static class Parser
+    internal static class Parser
     {
-        public static List<TranslatePair> Parse (IList<string> lines)
+        public static Dictionary<string, string> Parse (IList<string> lines)
         {
             List<string> newlist = new List<string>(lines);
             newlist.RemoveItemMatchRegex(@"^#");
@@ -30,8 +30,9 @@ namespace PoFileParser
 #endif
             }
 
-            pairs.RemoveAt(0); // 第一段是头文件,移除
-            return pairs;
+            pairs.RemoveAt(0); // 第一段是头文件,移除 TODO 存在隐患
+
+            return pairs.TransformToDictionary();
         }
 
         public static Dictionary<string, string> TransformToDictionary (this List<TranslatePair> translatePairs)

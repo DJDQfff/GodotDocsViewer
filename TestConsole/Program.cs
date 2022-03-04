@@ -7,6 +7,7 @@ using MyStandard20Library;
 using PoFileParser;
 using static RstFileContentChange.Program;
 using RstFileParser;
+using static System.Console;
 
 namespace ConsoleApp1
 {
@@ -14,21 +15,21 @@ namespace ConsoleApp1
     {
         private static void Main (string[] args)
         {
-            Dictionary<string, string> PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
+            var PoDic = PoFileParser.Factory.Creat(PoFilePath);
 
-            List<RstLine> rstLines = new List<RstLine>();
-
-            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
-            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
-            rstLines.Add(RstLineFactory.Creat(0, string.Empty, "dfjas"));
-
-            var list = rstLines.ConvertToTranslatedAllLines(PoPairs);
+            string path = @"D:\桌面\新建文本文档.txt";
+            var lines = File.ReadAllLines(path);
+            List<string> vs = new List<string>(lines);
+            var paragraph = vs.SplitParagraphByEmptyLines();
+            var rstli = ParagraphParser.Core(paragraph[0]);
+            WriteLine(rstli[0].Content);
+            var b = PoDic[rstli[0].Content];
             Console.ReadLine();
         }
 
         private static void TestCOre ()
         {
-            Dictionary<string, string> PoPairs = PoFileParser.Core.GetDictionary(PoFilePath);
+            var PoDictionary = PoFileParser.Factory.Creat(PoFilePath);
 
             string Path = @"D:\桌面\新建文本文档.txt";
             string test = @"D:\桌面\2.txt";
@@ -44,7 +45,6 @@ namespace ConsoleApp1
                 foreach (var r in rstLines)
                 {
                     Console.WriteLine(r.Content);
-                    Console.WriteLine(PoPairs.ContainsKey(r.Content));
                 }
                 Console.WriteLine();
                 //para.Abtract.ShowList();
@@ -56,25 +56,5 @@ namespace ConsoleApp1
                 //Console.ReadLine();
             }
         }
-
-        #region 方法
-
-        private static void TestPo ()
-        {
-            string poFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\godot-engine-godot-docs-zh_Hans.po";
-
-            Stream stream = new FileStream(poFilePath, FileMode.Open);
-            Core.Main(stream);
-        }
-
-        private static void NewMethod ()
-        {
-            string rstFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\getting_started\step_by_step\instancing.rst";
-            Stream stream = new FileStream(rstFilePath, FileMode.Open);
-
-            Core.Main(stream);
-        }
-
-        #endregion 方法
     }
 }

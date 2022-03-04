@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\我的API库\MyStandard20Library\MyStandard20Library.csproj" />
+    <ProjectReference Include="..\..\算法\MyAlgorithm.Compare\MyAlgorithm.Compare.csproj" />
   </ItemGroup>
 
 </Project>
