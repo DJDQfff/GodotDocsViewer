@@ -13,7 +13,7 @@ namespace RstFileContentChange
     public class Program
     {
         public const string PoFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\zh_CN.po";
-        public const string FolderPath = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
+        public const string TargetFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
         public const string FilterFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master\classes";
         public const string TestFolder = @"D:\桌面\测试";
         public static PoFileParser.PoDictionary PoDictionary = PoFileParser.Factory.Creat(PoFilePath);
@@ -22,13 +22,13 @@ namespace RstFileContentChange
         {
             Console.WriteLine("转换程序开始执行,输入任意键以继续：... ...");
 
-            Console.ReadLine();
+            ////Console.ReadLine();
 
             MainLoop(TestFolder);
         }
 
         /// <summary>
-        /// 递归对每个文件进行操作
+        /// 递归所有文件夹和rst文件
         /// </summary>
         /// <param name="currentfolder"></param>
         internal static void MainLoop (string currentfolder)
@@ -55,13 +55,18 @@ namespace RstFileContentChange
                     //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
-                    //Console.ReadLine();
+                    Console.ReadLine();
                 }
             }
             Console.WriteLine($"文件夹{currentfolder}已遍历完毕");
             //Console.ReadLine();
         }
 
+        /// <summary>
+        /// 对每一个rst文件进行解析
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private static List<RstLine> RstFileOperation (string path)
         {
             List<RstLine> rstLines = new List<RstLine>();

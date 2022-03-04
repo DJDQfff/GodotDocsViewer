@@ -45,7 +45,7 @@ namespace PoFileParser
                     }
                     else
                     {
-                        return key.PoolSelect(keyValuePairs.Keys, CompareSense.SentenceSense(), CompareSense.WordSense());
+                        return key.PoolSelect(keyValuePairs.Keys, CompareSense.Creat(1, 2, 1), CompareSense.Creat(0, 0, 0));
                     }
                 }
                 else
