@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
+
 using MyStandard20Library;
+
 using PoFileParser;
+
 using static System.Console;
 using static MyStandard20Library.ConsoleShow;
 
@@ -20,20 +23,19 @@ namespace RstFileParser
             {
                 string key = rst.Content;
 
-                string translated = key;
-
-                if (!string.IsNullOrWhiteSpace(key))             // 跳过无效key
+                if (rst.NeedTranslate)
                 {
-                    translated = dic[key];
+                    key = dic[key];
 
-                    if (translated is null)
+                    if (key is null)
                     {
-                        translated = rst.Content;                // 如果为null，则不翻译
-                        WriteLine($"失败：\n{key}\n");
+                        key = rst.Content;                // 如果为null，则不翻译
+                        WriteLine($"失败：\n{rst.Content}\n");
                     }
                 }
 
-                list.Add(rst.ConvertToString(translated));
+
+                list.Add(rst.ConvertToString(key));
             }
             return list;
         }
@@ -73,25 +75,26 @@ namespace RstFileParser
             List<RstLine> lines = new List<RstLine>();
             foreach (var para in paragraph.Lines)
             {
-                lines.Add(RstLineFactory.Creat(0, string.Empty, para));
+                lines.Add(RstLineFactory.Creat(0, string.Empty, para, false));
             }
 
             return lines;
         }
 
-        public static RstLine Creat (int index, string chars, string content)
+        public static RstLine Creat (int index, string chars, string content, bool totranslate)
         {
             return new RstLine()
             {
                 Index = index,
                 Char = chars,
-                Content = content
+                Content = content,
+                NeedTranslate = totranslate
             };
         }
 
         public static RstLine CreatNewLine ()
         {
-            return new RstLine() { Index = 0, Char = "\r\n", Content = string.Empty };
+            return new RstLine() { Index = 0, Char = "\r\n", Content = string.Empty, NeedTranslate = false };
         }
     }
 
@@ -102,12 +105,12 @@ namespace RstFileParser
     public class RstLine
     {
         /// <summary>
-        /// 该行首字符起始索引
+        /// 该行首字符起始索引，用来设置缩进
         /// </summary>
         public int Index { set; get; }
 
         /// <summary>
-        /// 改行的标记符号，如列表标记 * 注释符号 #
+        /// 该行的标记符号，如列表标记 * ，注释符号 #
         /// </summary>
         public string Char { set; get; }
 
@@ -115,5 +118,10 @@ namespace RstFileParser
         /// 该行的主体内容，旧的内容可能分成了多行存储，在新的里面都保存为一行
         /// </summary>
         public string Content { set; get; }
+
+        /// <summary>
+        /// 是否包含需要翻译的内容，除文档标记之外的给读者看（而不是开发者和编辑器）的内容
+        /// </summary>
+        public bool NeedTranslate { set; get; }
     }
 }

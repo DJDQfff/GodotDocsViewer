@@ -96,7 +96,7 @@ namespace RstFileParser
                 {
                     string line = currentItem.Lines[0];
                     string content = line.Substring(firstlinecontentstart);
-                    RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, content);
+                    RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, content, true);
                     rstLines.Add(rstLine);
                 }
                 else                                              // 一项占多行，
@@ -109,7 +109,7 @@ namespace RstFileParser
                         string source = currentItem.Lines.RstFileSpecialConnectString();
                         string strin = Regex.Replace(source, RstRegex.OrderList, string.Empty);
                         //var strin = source.Substring(firstlinecontentstart);            // 把前面的列表符消掉
-                        RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, strin);
+                        RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, strin, true);
                         rstLines.Add(rstLine);
                     }
                     else   // 多行情况下，可能存在不同缩进，分成了不同句，下面的写法只能适用于只用一次不同缩进的情况
@@ -117,12 +117,12 @@ namespace RstFileParser
                     {
                         string source = currentItem.Lines[0];
                         string str = source.Substring(firstlinecontentstart);
-                        RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, str);
+                        RstLine rstLine = RstLineFactory.Creat(match.Index, match.Value, str, true);
                         rstLines.Add(rstLine);
 
                         List<string> vs = currentItem.Lines.SubList(1, currentItem.Lines.Count - 1);
                         string aaa = vs.RstFileSpecialConnectString();
-                        RstLine rstLine1 = RstLineFactory.Creat(secondlinestart, string.Empty, aaa);
+                        RstLine rstLine1 = RstLineFactory.Creat(secondlinestart, string.Empty, aaa, true);
                         rstLines.Add(rstLine1);
                     }
                 }
@@ -174,7 +174,7 @@ namespace RstFileParser
             int index = paragraph.Lines[0].FirstNotWhiteSpaceCharacterIndex();
             string str = paragraph.Lines.RstFileSpecialConnectString();
 
-            lines.Add(RstLineFactory.Creat(index, string.Empty, str));
+            lines.Add(RstLineFactory.Creat(index, string.Empty, str, true));
             return lines;
         }
 
@@ -191,8 +191,8 @@ namespace RstFileParser
             string content = paragraph.Lines[count - 2];
             string underline = paragraph.Lines.LastItem();
 
-            lines.Add(RstLineFactory.Creat(0, string.Empty, content));
-            lines.Add(RstLineFactory.Creat(0, underline + underline + underline + underline, string.Empty));
+            lines.Add(RstLineFactory.Creat(0, string.Empty, content, true));
+            lines.Add(RstLineFactory.Creat(0, underline + underline + underline + underline, string.Empty, false));
 
             return lines;
         }

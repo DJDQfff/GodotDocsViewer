@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
+using static System.Console;
 using MyStandard20Library;
 
 using RstFileParser;
@@ -50,7 +50,16 @@ namespace RstFileContentChange
                 {
                     Console.WriteLine($"当前文件：{path}");
                     var rstlist = RstFileOperation(path);
-                    var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
+
+                    foreach (var rstline in rstlist)
+                    {
+                        WriteLine(rstline.NeedTranslate);
+                        WriteLine(rstline.Content);
+                        WriteLine();
+                    }
+
+                    //var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
+
                     //list.ShowList();
                     //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
