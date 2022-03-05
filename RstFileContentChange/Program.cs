@@ -15,7 +15,10 @@ namespace RstFileContentChange
         public const string PoFilePath = @"D:\桌面\新建文件夹 (2)\godot-docs-master\zh_CN.po";
         public const string TargetFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
         public const string FilterFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master\classes";
+
         public const string TestFolder = @"D:\桌面\测试";
+        public const string TestPoFile = @"D:\桌面\新建文件夹 (2)\zh_CN.po";
+
         public static PoFileParser.PoDictionary PoDictionary = PoFileParser.Factory.Creat(PoFilePath);
 
         private static void Main (params string[] args)
@@ -24,7 +27,7 @@ namespace RstFileContentChange
 
             ////Console.ReadLine();
 
-            MainLoop(TestFolder);
+            MainLoop(TargetFolder);
             WriteLine("结束");
             ReadLine();
         }

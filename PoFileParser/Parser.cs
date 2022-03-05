@@ -30,7 +30,10 @@ namespace PoFileParser
 #endif
             }
 
-            pairs.RemoveAt(0); // 第一段是头文件,移除 TODO 存在隐患
+            // TODO 存在隐患
+            // 第一段是头文件，不能用于字典
+
+            pairs.RemoveAt(0);
 
             return pairs.TransformToDictionary();
         }
