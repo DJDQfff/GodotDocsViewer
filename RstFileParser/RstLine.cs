@@ -54,14 +54,14 @@ namespace RstFileParser
         /// <returns></returns>
         public static string ConvertToString (this RstLine rstLine, string translatedcontent)
         {
-            int count = rstLine.Index;
+            int count = rstLine.Indent;
             StringBuilder stringBuilder = new StringBuilder();
             while (count-- > 0)
             {
                 stringBuilder.Append(' ');
             }
 
-            stringBuilder.Append(rstLine.Char);
+            stringBuilder.Append(rstLine.StartChar);
 
             stringBuilder.Append(string.IsNullOrWhiteSpace(translatedcontent) ? rstLine.Content : translatedcontent);
 
@@ -91,8 +91,8 @@ namespace RstFileParser
         {
             return new RstLine()
             {
-                Index = index,
-                Char = chars,
+                Indent = index,
+                StartChar = chars,
                 Content = content,
                 NeedTranslate = totranslate
             };
@@ -100,7 +100,7 @@ namespace RstFileParser
 
         public static RstLine CreatNewLine ()
         {
-            return new RstLine() { Index = 0, Char = "\r\n", Content = string.Empty, NeedTranslate = false };
+            return new RstLine() { Indent = 0, StartChar = "\r\n", Content = string.Empty, NeedTranslate = false };
         }
     }
 
@@ -113,12 +113,12 @@ namespace RstFileParser
         /// <summary>
         /// 该行首字符起始索引，用来设置缩进
         /// </summary>
-        public int Index { set; get; }
+        public int Indent { set; get; }
 
         /// <summary>
-        /// 该行的标记符号，如列表标记 * ，注释符号 #
+        /// 该行的起始标记符号，如列表标记 * ，注释符号 #
         /// </summary>
-        public string Char { set; get; }
+        public string StartChar { set; get; }
 
         /// <summary>
         /// 该行的主体内容，旧的内容可能分成了多行存储，在新的里面都保存为一行

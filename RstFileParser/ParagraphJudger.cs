@@ -53,17 +53,6 @@ namespace RstFileParser
         }
 
         /// <summary>
-        /// 是否是指令段落
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static bool IsCommand (this Paragraph paragraph)
-        {
-            return paragraph.AnyLineMatchRegex(RstRegex.CommandStart);
-            ////return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandStart) != -1;
-        }
-
-        /// <summary>
         /// 一般有3中情况下会使用引用
         /// 1：引用作为列表出现，这种不用管，识别为列表就行
         /// 2：在中文内出现，这用也不用管，翻译会自带。因为引用往往很长，引用一般会放到一行开始
@@ -76,7 +65,18 @@ namespace RstFileParser
             return paragraph.IsAllLinesMatchRegex(RstRegex.Ref);
         }
 
-        #region 对.. :格式还可以更详细，但目前还不懂相关语法，暂时不弄
+        #region 对Sphinx指令的精确分类
+
+        /// <summary>
+        /// 是否是指令段落
+        /// </summary>
+        /// <param name="paragraph"></param>
+        /// <returns></returns>
+        public static bool IsCommand (this Paragraph paragraph)
+        {
+            return paragraph.AnyLineMatchRegex(RstRegex.CommandStart);
+            ////return paragraph.FirstLineRegexMatchIndex(RstRegex.CommandStart) != -1;
+        }
 
         /// <summary>
         /// 判断段落是否是一个指令后跟着内容（要翻译）
@@ -98,59 +98,6 @@ namespace RstFileParser
             return paragraph.LastLineRegexMatchIndex(RstRegex.CommandOnly) != -1;
         }
 
-        #endregion 对.. :格式还可以更详细，但目前还不懂相关语法，暂时不弄
-
-        #region 废弃的方法
-
-        /* 判断段落是不是列表的方法
-        /// <summary>
-        /// 此方法判断：一个段落有多个列表
-        /// 一个段落由多个序列构成，但序列并不是一行紧挨一行，每行缩进不定
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static bool IsOrderListMulti (this Paragraph paragraph)
-        {
-        }
-
-        /// 列表段落有两种形式
-        /// 此方法判断：整个段落是一个序列，只在首行有序列符号
-        public static bool IsOrderListFullParagraph (this Paragraph paragraph)
-        {
-            if (paragraph.IsFirstLineStartWithRegex(RstRegex.OrderList))
-            {
-                if (paragraph.Lines.Count == 1)
-                {
-                    return true;
-                }
-                if (paragraph.Abtract[0] == paragraph.Abtract[1])
-                {
-                    return false;
-                }
-                for (int index = 1; index < paragraph.Lines.Count - 1; index++)
-                {
-                    if (paragraph.Abtract[index] != paragraph.Abtract[index + 1])
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 列表段落有两种形式
-        /// 此方法判断：段落的每一行都是一个序列，每行都以序列符号开头
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static bool IsOrderListEachLine (this Paragraph paragraph)
-        {
-            return paragraph.IsAllLinesMatchRegex(RstRegex.OrderList);
-        }
-        */
-
-        #endregion 废弃的方法
+        #endregion 对Sphinx指令的精确分类
     }
 }
