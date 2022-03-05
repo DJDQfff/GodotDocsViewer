@@ -30,10 +30,16 @@ namespace RstFileParser
                     if (key is null)
                     {
                         key = rst.Content;                // 如果为null，则不翻译
-                        WriteLine($"失败：\n{rst.Content}\n");
+                        //ShowErrorLine($"失败：\n{rst.Content}\n");
+                        WriteLine();
+                    }
+                    else
+                    {
+                        //WriteLine("成功");
+                        //WriteLine(rst.Content);
+                        //WriteLine(key);
                     }
                 }
-
 
                 list.Add(rst.ConvertToString(key));
             }

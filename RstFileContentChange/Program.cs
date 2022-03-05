@@ -25,6 +25,8 @@ namespace RstFileContentChange
             ////Console.ReadLine();
 
             MainLoop(TestFolder);
+            WriteLine("结束");
+            ReadLine();
         }
 
         /// <summary>
@@ -51,20 +53,13 @@ namespace RstFileContentChange
                     Console.WriteLine($"当前文件：{path}");
                     var rstlist = RstFileOperation(path);
 
-                    foreach (var rstline in rstlist)
-                    {
-                        WriteLine(rstline.NeedTranslate);
-                        WriteLine(rstline.Content);
-                        WriteLine();
-                    }
-
-                    //var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
+                    var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
 
                     //list.ShowList();
                     //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
-                    Console.ReadLine();
+                    ////Console.ReadLine();
                 }
             }
             Console.WriteLine($"文件夹{currentfolder}已遍历完毕");

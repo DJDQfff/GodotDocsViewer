@@ -10,7 +10,7 @@ using iText.Kernel.Geom;
 using iText.Layout.Element;
 
 using MyStandard20Library;
-using MyAlgorithm.Compare;
+using MyAlgorithm.Compare.EnglishSentence;
 
 namespace PoFileParser
 {
@@ -45,7 +45,10 @@ namespace PoFileParser
                     }
                     else
                     {
-                        return key.PoolSelect(keyValuePairs.Keys, CompareSense.Creat(1, 2, 1), CompareSense.Creat(0, 0, 0));
+                        return key.SelectByWordsFrequency(keyValuePairs.Keys, 0, 0.8d);
+                        //return key.SelectByWordsSequence(keyValuePairs.Keys, CompareSense.ByLengthAuto(key, 10), CompareSense.Creat(0, 0, 0, 0));
+
+                        //return key.PoolSelect(keyValuePairs.Keys, CompareSense.Creat(3, 2, 4, 4), CompareSense.Creat(0, 0, 0, 0));
                     }
                 }
                 else
