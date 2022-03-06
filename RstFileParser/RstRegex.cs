@@ -8,7 +8,15 @@ namespace RstFileParser
 {
     public class RstRegex
     {
+        public const string LiteralBlock = @"^\s*::$";
+
+        /// <summary>
+        /// 显示标记
+        /// </summary>
+        public const string Command = @"^..\s";
+
         public const string CommandToctree = @"^\.{2}\s+toctree:";
+
         /// <summary>
         /// 以.. :开头，不管，后面还有没有东西，用于笼统判断
         /// </summary>

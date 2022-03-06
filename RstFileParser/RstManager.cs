@@ -45,7 +45,7 @@ namespace RstFileParser
                 rstParagraphs.Add(rstParagraph);
                 if (rstParagraph.rstParagraphType == Command)
                 {
-                    // 对于段落要特殊处理 TODO
+                    // TODO 段落需要特殊处理
                     j++;
                     var paragraphNext = paragraphs[j];
                     RstParagraph rstParagraphNext = new RstParagraph(paragraphNext)

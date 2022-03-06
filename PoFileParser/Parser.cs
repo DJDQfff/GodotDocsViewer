@@ -30,8 +30,7 @@ namespace PoFileParser
 #endif
             }
 
-            // TODO 存在隐患
-            // 第一段是头文件，不能用于字典
+            // TODO 存在隐患:第一段是头文件，不能用于字典。这里只是简单的移除第一段
 
             pairs.RemoveAt(0);
 

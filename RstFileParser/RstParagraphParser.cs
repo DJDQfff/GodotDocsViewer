@@ -38,7 +38,7 @@ namespace RstFileParser
         #region 具体到每个类型的解析方法
 
         /// <summary>
-        /// TODO
+        /// TODO 需要优化
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
@@ -103,12 +103,6 @@ namespace RstFileParser
             return RstLineFactory.Origin(paragraph);
         }
 
-        private static List<RstLine> ParseCommandNext (this IParagraph rstParagraph)
-        {
-            // TODO
-            return null;
-        }
-
         /// <summary>
         /// 解析表格
         /// </summary>
@@ -116,7 +110,7 @@ namespace RstFileParser
         /// <returns></returns>
         private static List<RstLine> ParseTable (this IParagraph paragraph)
         {
-            // TODO： 表格以后再说吧，懒得弄了
+            // TODO 这里懒得解析表格，直接整段原样返回
             return RstLineFactory.Origin(paragraph);
         }
 
@@ -165,11 +159,6 @@ namespace RstFileParser
             return lines;
         }
 
-        private static List<RstLine> ParseUnknown (this IParagraph rstParagraph)
-        {
-            //TODO
-            return null;
-        }
 
         #endregion 具体到每个类型的解析方法
     }
