@@ -21,9 +21,6 @@ namespace ConsoleApp1
             var lines = File.ReadAllLines(path);
             List<string> vs = new List<string>(lines);
             var paragraph = vs.SplitParagraphByEmptyLines();
-            var rstli = ParagraphParser.Core(paragraph[0]);
-            WriteLine(rstli[0].Content);
-            var b = PoDic[rstli[0].Content];
             Console.ReadLine();
         }
 
@@ -41,11 +38,6 @@ namespace ConsoleApp1
             foreach (var para in paragraph)
             {
                 //para.Lines.ShowList();
-                var rstLines = ParagraphParser.Core(para);
-                foreach (var r in rstLines)
-                {
-                    Console.WriteLine(r.Content);
-                }
                 Console.WriteLine();
                 //para.Abtract.ShowList();
                 //if (para.IsOrderList())

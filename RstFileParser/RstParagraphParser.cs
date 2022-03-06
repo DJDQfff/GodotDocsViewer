@@ -3,84 +3,46 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Linq;
-using MyStandard20Library;
-
 using System.Text.RegularExpressions;
+
+using MyStandard20Library;
 
 namespace RstFileParser
 {
-    /// <summary>
-    /// 对段落进行解析
-    /// </summary>
-    public static class ParagraphParser
+    public static class RstParagraphParser
     {
-        /// <summary>
-        /// 对外的统一调用
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
-        public static List<RstLine> Core (Paragraph paragraph)
+        public static List<RstLine> Parse (this RstParagraph rstParagraph)
         {
-            List<RstLine> rstLines = new List<RstLine>();
-            if (paragraph.IsOrderList())
+            switch (rstParagraph.rstParagraphType)
             {
-                var list = ParseOrderList(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
+                case RstParagraphType.Command:
+                    return rstParagraph.ParseCommand();
+
+                case RstParagraphType.OrderList:
+                    return rstParagraph.ParseOrderList();
+
+                case RstParagraphType.Table:
+                    return rstParagraph.ParseTable();
+
+                case RstParagraphType.ChapterTitle:
+                    return rstParagraph.ParseTitle();
+
+                case RstParagraphType.TextBody:
+                    return rstParagraph.ParseBody();
+
+                default:
+                    return null;
             }
-            if (paragraph.IsTitle())
-            {
-                var list = ParseTitle(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            if (paragraph.IsTable())
-            {
-                var list = ParseTable(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            if (paragraph.IsCommand())
-            {
-                var list = ParseCommand(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            /* 对Command进行更加详细的分析，
-             * 对语法还不太会，暂时不弄
-            if (paragraph.IsCommandSingleLine())
-            {
-                var list = ParseCommand(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            if (paragraph.IsCommandLineWithContent())
-            {
-                var list = ParseCommand(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            */
-            if (paragraph.IsRef())
-            {
-                var list = ParseRef(paragraph);
-                rstLines.AddRange(list);
-                return rstLines;
-            }
-            // 都不是的情况下，  默认为正文内容
-            var rstline = paragraph.ParseBody();
-            return rstline;
         }
 
-        #region 具体每个类型的解析方法
+        #region 具体到每个类型的解析方法
 
         /// <summary>
-        ///
+        /// TODO
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseOrderList (this Paragraph paragraph)
+        private static List<RstLine> ParseOrderList (this IParagraph paragraph)
         {
             List<RstLine> rstLines = new List<RstLine>();
 
@@ -136,9 +98,15 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseCommand (this Paragraph paragraph)
+        private static List<RstLine> ParseCommand (this IParagraph paragraph)
         {
             return RstLineFactory.Origin(paragraph);
+        }
+
+        private static List<RstLine> ParseCommandNext (this IParagraph rstParagraph)
+        {
+            // TODO
+            return null;
         }
 
         /// <summary>
@@ -146,7 +114,7 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseTable (this Paragraph paragraph)
+        private static List<RstLine> ParseTable (this IParagraph paragraph)
         {
             // TODO： 表格以后再说吧，懒得弄了
             return RstLineFactory.Origin(paragraph);
@@ -158,7 +126,7 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseRef (this Paragraph paragraph)
+        private static List<RstLine> ParseRef (this IParagraph paragraph)
         {
             return RstLineFactory.Origin(paragraph);
         }
@@ -168,7 +136,7 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseBody (this Paragraph paragraph)
+        private static List<RstLine> ParseBody (this IParagraph paragraph)
         {
             List<RstLine> lines = new List<RstLine>();
             int index = paragraph.Lines[0].FirstNotWhiteSpaceCharacterIndex();
@@ -183,7 +151,7 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        private static List<RstLine> ParseTitle (this Paragraph paragraph)
+        private static List<RstLine> ParseTitle (this IParagraph paragraph)
         {
             List<RstLine> lines = new List<RstLine>();
 
@@ -197,56 +165,12 @@ namespace RstFileParser
             return lines;
         }
 
-        #endregion 具体每个类型的解析方法
-
-        #region 废弃的方法
-
-        private static void ParseOrderList_3 (this Paragraph paragraph)
+        private static List<RstLine> ParseUnknown (this IParagraph rstParagraph)
         {
-            List<RstLine> rstLines = new List<RstLine>();
-            List<(int, int)> ps = new List<(int, int)>();
-            foreach (var line in paragraph.Lines)
-            {
-                var i1 = line.SearchOrderListIndex(RstRegex.OrderList);
-                var i2 = i1 + 3;
-                ps.Add((i1, i2));
-            }
-            int lineIndex = 0;
-            while (lineIndex < paragraph.Lines.Count)
-            {
-                if (ps[lineIndex].Item1 != -1)              // 这一行是以列表开头
-                {
-                }
-            }
-        }
-
-        private static List<RstLine> ParseOrderList_2 (this Paragraph paragraph)
-        {
-            List<RstLine> rstLines = new List<RstLine>();
-
+            //TODO
             return null;
         }
 
-        private static List<RstLine> ParserOrderList_1 (this Paragraph paragraph)
-        {
-            List<RstLine> rstLines = new List<RstLine>();
-            int firstIndex = paragraph.FirstLineRegexMatchIndex(RstRegex.OrderList);
-
-            ListLoop(paragraph);
-
-            return rstLines;
-
-            void ListLoop (Paragraph parent)
-            {
-                var splitedParagraph = parent.SplitOrderListLine();
-                foreach (var child in splitedParagraph)
-                {
-                    child.Lines.ShowList();
-                    ListLoop(child);
-                }
-            }
-        }
-
-        #endregion 废弃的方法
+        #endregion 具体到每个类型的解析方法
     }
 }

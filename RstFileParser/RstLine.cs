@@ -50,7 +50,7 @@ namespace RstFileParser
         /// 传入要翻译的文本，如果为空则用原句
         /// </summary>
         /// <param name="rstLine"></param>
-        /// <param name="translatedcontent"></param>
+        /// <param name="translatedcontent">使用此内容替换rstline的content</param>
         /// <returns></returns>
         public static string ConvertToString (this RstLine rstLine, string translatedcontent)
         {
@@ -76,7 +76,7 @@ namespace RstFileParser
         /// </summary>
         /// <param name="paragraph"></param>
         /// <returns></returns>
-        public static List<RstLine> Origin (Paragraph paragraph)
+        public static List<RstLine> Origin (IParagraph paragraph)
         {
             List<RstLine> lines = new List<RstLine>();
             foreach (var para in paragraph.Lines)

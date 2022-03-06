@@ -80,30 +80,11 @@ namespace RstFileContentChange
             var lines = File.ReadAllLines(path);
             var pragraphes = lines.SplitParagraphByEmptyLines();
 
-            bool flag = true;
-            for (int index = 0; index < pragraphes.Count; index++)
-            {
-                var rstpragraph = pragraphes[index];
-                if (flag)
-                {
-                    rstLines.AddRange(ParagraphParser.Core(rstpragraph));
-                }
-                else
-                {
-                    rstLines.AddRange(RstLineFactory.Origin(rstpragraph));
-                }
+            RstManager rstManager = new RstManager(pragraphes);
+            rstManager.Start();
+            rstManager.Convert(PoDictionary);
+            rstManager.Values.ShowList();
 
-                rstLines.Add(RstLineFactory.CreatNewLine());
-
-                if (rstpragraph.Lines.AnyLineContains("toctree"))  // TODO 这个判断方法存在隐患
-                {
-                    flag = false;    // tortree为一个命令，他下面的一段都是给Sphinx用的，不需要翻译，跳过
-                }
-                else
-                {
-                    flag = true;
-                }
-            }
             Console.WriteLine($"{path}已遍历完");
             //Console.ReadLine();
 
