@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="RstManager.cs~RF707bebd.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="itext7" Version="7.2.1" />
   </ItemGroup>
 

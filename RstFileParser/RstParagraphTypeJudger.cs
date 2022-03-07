@@ -19,39 +19,38 @@ namespace RstFileParser
         }
 
         /// <summary>
-        /// 判断一个段落是不是排序列表
-        /// 要求：以* - + 数字 等开头，后接空格
-        ///      且必须在段落头
+        /// 判断一个段落是不是排序列表 要求：以* - + 数字 等开头，后接空格 且必须在段落头
         /// </summary>
-        /// <param name="paragraph">段落</param>
-        /// <returns></returns>
+        /// <param name="paragraph"> 段落 </param>
+        /// <returns> </returns>
         public static bool IsOrderList (this IParagraph paragraph)
         {
             return paragraph.FirstLineRegexMatchIndex(RstRegex.OrderList) != -1;
         }
 
         /// <summary>
-        /// 判断一个段落是不是标题段落
-        /// 要求：标题根下划线，上划线可选，起码两行，下划线比标题长
+        /// 判断一个段落是不是标题段落 要求：标题根下划线，上划线可选，起码两行，下划线比标题长
         /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
+        /// <param name="paragraph"> </param>
+        /// <returns> </returns>
         public static bool IsTitle (this IParagraph paragraph)
         {
+            string chars = "! \" # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _ ` { | } ~";
             if (paragraph.Lines.Count >= 2)
             {
-                return paragraph.LastLineRegexMatchIndex(RstRegex.TitleUnderline) != -1;
+                string underline = paragraph.Lines.LastItem();
+                bool result = underline.IsRepeatCharLine(chars.ToCharArray());
+                return result;
             }
             else
                 return false;
         }
 
         /// <summary>
-        /// 判断一个段落是否是列表
-        /// TODO 有好几种列表，这里只弄了一种，存在隐患
+        /// 判断一个段落是否是列表 TODO 有好几种列表，这里只弄了一种，存在隐患
         /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
+        /// <param name="paragraph"> </param>
+        /// <returns> </returns>
         public static bool IsTable (this IParagraph paragraph)
         {
             var bool1 = paragraph.FirstLineRegexMatchIndex(RstRegex.TableLine);
@@ -67,8 +66,8 @@ namespace RstFileParser
         /// 他的后面几段都是他的有效范围（取决于后续段落的缩进）
         /// 判断：他有3中使用情况，但这里只判断一种（即单独作为段落使用）
         /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
+        /// <param name="paragraph"> </param>
+        /// <returns> </returns>
         public static bool IsLiteralBlock (this IParagraph paragraph)
         {
             if (paragraph.Lines.Count == 1)
@@ -80,14 +79,9 @@ namespace RstFileParser
                 return false;
         }
 
-        /// <summary>
-        /// 一般有3中情况下会使用引用
-        /// 1：引用作为列表出现，这种不用管，识别为列表就行
-        /// 2：在中文内出现，这用也不用管，翻译会自带。因为引用往往很长，引用一般会放到一行开始
-        /// 3：单独出现，主要针对这种
-        /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
+        /// <summary> TODO Ref </summary>
+        /// <param name="paragraph"> </param>
+        /// <returns> </returns>
         public static bool IsRef (this IParagraph paragraph)
         {
             // TODO Ref还没仔细看语法，暂时不管
@@ -96,7 +90,7 @@ namespace RstFileParser
 
         #endregion 具体方法细节
 
-        public static RstParagraph JudgeType (Paragraph _paragraph)
+        public static RstParagraph JudgeType (IParagraph _paragraph)
         {
             RstParagraph rstParagraph = new RstParagraph(_paragraph);
 
@@ -104,6 +98,11 @@ namespace RstFileParser
             {
                 rstParagraph.rstParagraphType = RstParagraphType.Command;
                 return rstParagraph;
+            }
+
+            if (_paragraph.IsLiteralBlock())
+            {
+                rstParagraph.rstParagraphType = RstParagraphType.LiteralBlock;
             }
 
             if (_paragraph.IsOrderList())

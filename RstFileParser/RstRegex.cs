@@ -13,7 +13,7 @@ namespace RstFileParser
         /// <summary>
         /// 显示标记
         /// </summary>
-        public const string Command = @"^..\s";
+        public const string Command = @"^\s*\.\.\s.+";
 
         public const string CommandToctree = @"^\.{2}\s+toctree:";
 

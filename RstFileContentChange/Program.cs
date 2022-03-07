@@ -21,6 +21,8 @@ namespace RstFileContentChange
 
         public static PoFileParser.PoDictionary PoDictionary = PoFileParser.Factory.Creat(PoFilePath);
 
+        public static List<string> strs = new List<string>();
+
         private static void Main (params string[] args)
         {
             Console.WriteLine("转换程序开始执行,输入任意键以继续：... ...");
@@ -32,10 +34,8 @@ namespace RstFileContentChange
             ReadLine();
         }
 
-        /// <summary>
-        /// 递归所有文件夹和rst文件
-        /// </summary>
-        /// <param name="currentfolder"></param>
+        /// <summary> 递归所有文件夹和rst文件 </summary>
+        /// <param name="currentfolder"> </param>
         internal static void MainLoop (string currentfolder)
         {
             string[] subfolders = Directory.GetDirectories(currentfolder);
@@ -54,36 +54,30 @@ namespace RstFileContentChange
                 if (path.IsRstFile())
                 {
                     Console.WriteLine($"当前文件：{path}");
-                    var rstlist = RstFileOperation(path);
+                    var lines = RstFileOperation(path);
 
-                    var list = rstlist.ConvertToTranslatedAllLines(PoDictionary);
-
-                    //list.ShowList();
+                    //lines.ShowList();
                     //File.WriteAllLines(path, list);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
-                    ////Console.ReadLine();
+                    //Console.ReadLine();
                 }
             }
             Console.WriteLine($"文件夹{currentfolder}已遍历完毕");
             //Console.ReadLine();
         }
 
-        /// <summary>
-        /// 对每一个rst文件进行解析
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private static List<RstLine> RstFileOperation (string path)
+        /// <summary> 对每一个rst文件进行解析 </summary>
+        /// <param name="path"> </param>
+        /// <returns> </returns>
+        private static List<string> RstFileOperation (string path)
         {
-            List<RstLine> rstLines = new List<RstLine>();
             var lines = File.ReadAllLines(path);
+
             var pragraphes = lines.SplitParagraphByEmptyLines();
 
             RstManager rstManager = new RstManager(pragraphes);
-            rstManager.Start();
-            rstManager.Convert(PoDictionary);
-            rstManager.Values.ShowList();
+            var rstLines = rstManager.Get(PoDictionary);
 
             Console.WriteLine($"{path}已遍历完");
             //Console.ReadLine();

@@ -21,15 +21,15 @@ namespace RstFileParser
             List<string> list = new List<string>();
             foreach (var rst in rstLines)
             {
-                string key = rst.Content;
+                string value = rst.Content;
 
                 if (rst.NeedTranslate)
                 {
-                    key = dic[key];
+                    value = dic[value];
 
-                    if (key is null)
+                    if (value is null)
                     {
-                        key = rst.Content;                // 如果为null，则不翻译
+                        value = rst.Content;                // 如果为null，则不翻译
                         WriteLine($"失败：\n{rst.Content}\n");
                         //ReadLine();
                     }
@@ -40,18 +40,17 @@ namespace RstFileParser
                         //WriteLine(key);
                     }
                 }
-
-                list.Add(rst.ConvertToString(key));
+                list.Add(rst.ConvertToString(value));
             }
             return list;
         }
 
-        /// <summary>
-        /// 传入要翻译的文本，如果为空则用原句
-        /// </summary>
-        /// <param name="rstLine"></param>
-        /// <param name="translatedcontent">使用此内容替换rstline的content</param>
-        /// <returns></returns>
+        /// <summary> 传入要翻译的文本，如果为空则用原句 </summary>
+        /// <param name="rstLine"> </param>
+        /// <param name="translatedcontent">
+        /// 使用此内容替换rstline的content
+        /// </param>
+        /// <returns> </returns>
         public static string ConvertToString (this RstLine rstLine, string translatedcontent)
         {
             int count = rstLine.Indent;
@@ -71,23 +70,44 @@ namespace RstFileParser
 
     public static class RstLineFactory
     {
+        public static List<RstLine> Origin<T> (IList<T> paragraphs) where T : IParagraph
+        {
+            List<RstLine> rstLines = new List<RstLine>();
+            foreach (var para in paragraphs)
+            {
+                var lines = RstLineFactory.Origin(para);
+                var newline = RstLineFactory.CreatNewLine();
+
+                rstLines.AddRange(lines);
+                rstLines.Add(newline);
+            }
+            return rstLines;
+        }
+
         /// <summary>
-        /// 内容不变，以rstline返回，用于偷懒、懒得解析
+        /// 段落内容保持不变，以原本形式输出。
+        /// 例如，原本多行应该合并为一行的段落，使用origin方法，则保持多行输出
         /// </summary>
-        /// <param name="paragraph"></param>
-        /// <returns></returns>
+        /// <param name="paragraph"> </param>
+        /// <returns> </returns>
         public static List<RstLine> Origin (IParagraph paragraph)
         {
             List<RstLine> lines = new List<RstLine>();
-            foreach (var para in paragraph.Lines)
+            foreach (var line in paragraph.Lines)
             {
-                lines.Add(RstLineFactory.Creat(0, string.Empty, para, false));
+                lines.Add(RstLineFactory.CustomCreat(0, string.Empty, line, false));
             }
 
             return lines;
         }
 
-        public static RstLine Creat (int index, string chars, string content, bool totranslate)
+        /// <summary> 自定义创建 </summary>
+        /// <param name="index"> </param>
+        /// <param name="chars"> </param>
+        /// <param name="content"> </param>
+        /// <param name="totranslate"> </param>
+        /// <returns> </returns>
+        public static RstLine CustomCreat (int index, string chars, string content, bool totranslate)
         {
             return new RstLine()
             {
@@ -98,26 +118,21 @@ namespace RstFileParser
             };
         }
 
+        /// <summary> 创建一个换行RstLine </summary>
+        /// <returns> </returns>
         public static RstLine CreatNewLine ()
         {
             return new RstLine() { Indent = 0, StartChar = "\r\n", Content = string.Empty, NeedTranslate = false };
         }
     }
 
-    /// <summary>
-    /// 解析后的内容行，用于存储解析获得内容
-    /// 第一个
-    /// </summary>
+    /// <summary> 合并原来的多行文字到一个完整的行上去 </summary>
     public class RstLine
     {
-        /// <summary>
-        /// 该行首字符起始索引，用来设置缩进
-        /// </summary>
+        /// <summary> 该行首字符起始索引，用来设置缩进 </summary>
         public int Indent { set; get; }
 
-        /// <summary>
-        /// 该行的起始标记符号，如列表标记 * ，注释符号 #
-        /// </summary>
+        /// <summary> 该行的起始标记符号，如列表标记 * ，注释符号 # </summary>
         public string StartChar { set; get; }
 
         /// <summary>
@@ -126,8 +141,11 @@ namespace RstFileParser
         public string Content { set; get; }
 
         /// <summary>
-        /// 是否包含需要翻译的内容，除文档标记之外的给读者看（而不是开发者和编辑器）的内容
+        /// 指示该Content是否是有效的文字内容，如果是正常文字，则设为true。如果是Sphinx的段落标记啥的，则设为false
         /// </summary>
         public bool NeedTranslate { set; get; }
+
+        /// <summary> 该行的结束标记符号，如Comment的后面有一个点 . </summary>
+        public string EndChar { set; get; }
     }
 }

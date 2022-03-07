@@ -13,7 +13,17 @@ namespace ConsoleApp1
 {
     internal class Program
     {
+        public const string TargetFolder = @"D:\桌面\新建文件夹 (2)\godot-docs-master";
+
         private static void Main (string[] args)
+        {
+
+
+
+            Console.ReadLine();
+        }
+
+        private static void NewMethod ()
         {
             var PoDic = PoFileParser.Factory.Creat(PoFilePath);
 
@@ -21,7 +31,6 @@ namespace ConsoleApp1
             var lines = File.ReadAllLines(path);
             List<string> vs = new List<string>(lines);
             var paragraph = vs.SplitParagraphByEmptyLines();
-            Console.ReadLine();
         }
 
         private static void TestCOre ()
