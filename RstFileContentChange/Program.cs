@@ -57,7 +57,7 @@ namespace RstFileContentChange
                     var lines = RstFileOperation(path);
 
                     //lines.ShowList();
-                    //File.WriteAllLines(path, list);             // 覆盖文件操作
+                    File.WriteAllLines(path, lines);             // 覆盖文件操作
                     Console.WriteLine($"已执行完{path}");
                     Console.WriteLine();
                     //Console.ReadLine();
